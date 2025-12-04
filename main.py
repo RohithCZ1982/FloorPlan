@@ -13,7 +13,7 @@ if not api_key:
 genai.configure(api_key=api_key)
 # Try gemini-1.5-flash first (faster, cheaper), fallback to gemini-1.5-pro if needed
 try:
-    model = genai.GenerativeModel("gemini-2.0-flash-001)
+    model = genai.GenerativeModel("gemini-2.0-flash-001")
 except Exception as e:
     print(f"Warning: Could not load gemini-1.5-flash, trying gemini-1.5-pro: {e}")
     model = genai.GenerativeModel("gemini-2.5-pro")
