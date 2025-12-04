@@ -63,5 +63,3 @@ async def generate_dream(
 @app.get("/viewer")
 async def viewer(request: Request):
     return templates.TemplateResponse("viewer.html", {"request": request})
-
- port=8000)
