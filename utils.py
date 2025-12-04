@@ -4,6 +4,9 @@ import base64
 from io import BytesIO
 from PIL import Image
 import os
+# At the top, after imports
+import logging
+logging.basicConfig(level=logging.INFO)
 
 def generate_with_gemini(model, prompt, contents=None):
     if contents is None:
