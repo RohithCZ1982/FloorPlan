@@ -7,7 +7,7 @@ import os
 from utils import generate_with_gemini, save_image, estimate_costs
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")  # Use 'gemini-1.5-pro' for better quality
+model = genai.GenerativeModel("gemini-2.0-flash-001")  # Use 'gemini-1.5-pro' for better quality
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -33,20 +33,23 @@ async def generate_dream(
             image_paths.append(path)
 
         # Generate floor plan
-        floor_prompt = open("prompts/floorplan.txt").read().format(user_prompt=prompt)
+        with open("prompts/floorplan.txt", "r") as f:
+            floor_prompt = f.read().format(user_prompt=prompt)
         floor_response = generate_with_gemini(model, floor_prompt, contents)
-        floor_img = floor_response.parts[0].file if floor_response.parts else None
+        floor_img = floor_response.parts[0].file if floor_response.parts and hasattr(floor_response.parts[0], 'file') else None
 
         # Generate exterior
-        exterior_prompt = open("prompts/exterior.txt").read().format(user_prompt=prompt)
+        with open("prompts/exterior.txt", "r") as f:
+            exterior_prompt = f.read().format(user_prompt=prompt)
         exterior_response = generate_with_gemini(model, exterior_prompt, contents)
-        exterior_img = exterior_response.parts[0].file if exterior_response.parts else None
+        exterior_img = exterior_response.parts[0].file if exterior_response.parts and hasattr(exterior_response.parts[0], 'file') else None
 
         # Cost breakdown
         cost_data = estimate_costs(prompt)
 
         # Structural check (simple)
-        check_prompt = open("prompts/structural_check.txt").read().format(user_prompt=prompt)
+        with open("prompts/structural_check.txt", "r") as f:
+            check_prompt = f.read().format(user_prompt=prompt)
         check_response = generate_with_gemini(model, check_prompt, contents)
 
         return templates.TemplateResponse("chat.html", {
@@ -58,7 +61,16 @@ async def generate_dream(
             "prompt": prompt
         })
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        import traceback
+        error_msg = str(e)
+        error_trace = traceback.format_exc()
+        print(f"Error in /dream endpoint: {error_msg}")
+        print(f"Traceback: {error_trace}")
+        # Return HTML error message that HTMX can display
+        return HTMLResponse(
+            status_code=500,
+            content=f'<div class="bg-red-600 p-4 rounded-lg"><h3 class="font-bold mb-2">Error</h3><p>{error_msg}</p></div>'
+        )
 
 @app.get("/viewer")
 async def viewer(request: Request):
