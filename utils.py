@@ -9,25 +9,29 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 def generate_with_gemini(model, prompt, contents=None):
-    if contents is None:
-        contents = [prompt]
-    else:
-        contents = contents + [prompt]
-    
-    response = model.generate_content(
-        contents,
-        generation_config={
-            "response_mime_type": "text/plain",  # Or "image/png" for images
-            "temperature": 0.7,
-        },
-        safety_settings={
-            "HARASSMENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-            "HATE_SPEECH": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-            "SEXUALLY_EXPLICIT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-            "DANGEROUS_CONTENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-        },
-    )
-    return response
+    try:
+        if contents is None:
+            contents = [prompt]
+        else:
+            contents = contents + [prompt]
+        
+        response = model.generate_content(
+            contents,
+            generation_config={
+                "response_mime_type": "text/plain",  # Or "image/png" for images
+                "temperature": 0.7,
+            },
+            safety_settings={
+                "HARASSMENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+                "HATE_SPEECH": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+                "SEXUALLY_EXPLICIT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+                "DANGEROUS_CONTENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+            },
+        )
+        return response
+    except Exception as e:
+        logging.error(f"Error in generate_with_gemini: {str(e)}")
+        raise
 
 def save_image(bytes_data, filename):
     os.makedirs("static/uploads", exist_ok=True)
