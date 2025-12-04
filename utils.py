@@ -15,18 +15,22 @@ def generate_with_gemini(model, prompt, contents=None):
         else:
             contents = contents + [prompt]
         
+        # Safety settings - using dictionary format with enum keys and threshold values
+        # BLOCK_NONE allows all content (least restrictive), adjust as needed
+        safety_settings = {
+            genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+            genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_NONE,
+            genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+            genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_NONE,
+        }
+        
         response = model.generate_content(
             contents,
             generation_config={
                 "response_mime_type": "text/plain",  # Or "image/png" for images
                 "temperature": 0.7,
             },
-            safety_settings={
-                "HARASSMENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-                "HATE_SPEECH": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-                "SEXUALLY_EXPLICIT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-                "DANGEROUS_CONTENT": genai.types.HarmCategory.HARM_CATEGORY_UNSPECIFIED,
-            },
+            safety_settings=safety_settings,
         )
         return response
     except Exception as e:
