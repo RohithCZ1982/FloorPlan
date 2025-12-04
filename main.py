@@ -64,6 +64,4 @@ async def generate_dream(
 async def viewer(request: Request):
     return templates.TemplateResponse("viewer.html", {"request": request})
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+ port=8000)
