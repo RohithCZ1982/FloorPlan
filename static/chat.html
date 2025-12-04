@@ -1,0 +1,29 @@
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold">Your Dream Design</h2>
+    
+    {% if floor_img %}
+    <div>
+        <h3 class="text-lg font-semibold mb-2">Floor Plan</h3>
+        <img src="{{ floor_img.uri }}" alt="Floor Plan" class="w-full rounded-lg shadow-lg">
+    </div>
+    {% endif %}
+    
+    {% if exterior_img %}
+    <div>
+        <h3 class="text-lg font-semibold mb-2">Exterior Render</h3>
+        <img src="{{ exterior_img.uri }}" alt="Exterior" class="w-full rounded-lg shadow-lg">
+    </div>
+    {% endif %}
+    
+    <div>
+        <h3 class="text-lg font-semibold mb-2">Cost Breakdown</h3>
+        <pre class="bg-gray-700 p-4 rounded-lg overflow-auto">{{ cost_data | tojson }}</pre>
+    </div>
+    
+    <div>
+        <h3 class="text-lg font-semibold mb-2">Structural Notes</h3>
+        <p class="bg-gray-700 p-4 rounded-lg">{{ check }}</p>
+    </div>
+    
+    <a href="/viewer?prompt={{ prompt }}" class="block w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg text-center font-bold">View in 3D →</a>
+</div>
