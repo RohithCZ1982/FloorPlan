@@ -137,3 +137,21 @@ async def test_api():
                 "api_key_set": bool(api_key)
             }
         )
+
+@app.get("/server-info")
+async def server_info(request: Request):
+    """Get server IP information for API key configuration"""
+    import httpx
+    try:
+        # Get the server's public IP
+        async with httpx.AsyncClient() as client:
+            ip_response = await client.get("https://api.ipify.org?format=json", timeout=5.0)
+            public_ip = ip_response.json().get("ip", "Unknown")
+    except:
+        public_ip = "Could not determine"
+    
+    return JSONResponse({
+        "server_ip": public_ip,
+        "note": "Use this IP address in Google Cloud Console if using IP address restrictions",
+        "recommendation": "Best option: Create a new API key with 'None' restrictions for server-side use"
+    })

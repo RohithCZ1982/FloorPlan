@@ -34,7 +34,20 @@ def generate_with_gemini(model, prompt, contents=None):
         )
         return response
     except Exception as e:
-        logging.error(f"Error in generate_with_gemini: {str(e)}")
+        error_msg = str(e)
+        logging.error(f"Error in generate_with_gemini: {error_msg}")
+        # Check for API key referrer blocking error
+        if "API_KEY_HTTP_REFERRER_BLOCKED" in error_msg or "referer" in error_msg.lower():
+            raise Exception(
+                "API Key Configuration Error: Your API key has HTTP referrer restrictions enabled. "
+                "HTTP referrer restrictions ONLY work for browser/client-side JavaScript calls. "
+                "Your FastAPI server makes server-side API calls which don't send HTTP referrers. "
+                "\n\nSOLUTION: In Google Cloud Console (https://console.cloud.google.com/apis/credentials):\n"
+                "1. Click on your API key\n"
+                "2. Under 'Application restrictions', change from 'HTTP referrers' to 'None'\n"
+                "3. Save and wait 2-3 minutes\n"
+                "\nNote: HTTP referrer restrictions cannot work for server-side API calls."
+            )
         raise
 
 def save_image(bytes_data, filename):
