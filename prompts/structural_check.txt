@@ -1,0 +1,9 @@
+Analyze the structural feasibility of the following architectural project: {user_prompt}
+
+Provide a professional structural engineering assessment including:
+- Load-bearing considerations
+- Foundation requirements
+- Material recommendations
+- Potential structural challenges
+- Safety considerations
+

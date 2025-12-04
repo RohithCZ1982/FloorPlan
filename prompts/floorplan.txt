@@ -1,0 +1,4 @@
+Generate a detailed floor plan for the following project: {user_prompt}
+
+Create a professional architectural floor plan showing room layouts, dimensions, and spatial relationships. Include labels for all rooms and key features.
+

@@ -1,0 +1,4 @@
+Generate an exterior architectural rendering for the following project: {user_prompt}
+
+Create a photorealistic exterior view showing the building from a front perspective, including landscaping, materials, and architectural details.
+
